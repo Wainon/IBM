@@ -1,0 +1,118 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+    background-image: url("https://million-wallpapers.ru/wallpapers/3/60/472495692840959/fioletovaya-abstrakciya-krasivyj-fon.jpg");
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.wrapper {
+    background-color: white;
+    padding: 5%;
+    width: 40%;
+    height: 70%;
+    border-radius: 3%;
+    box-shadow: 30px 30px 30px rgba(84, 82, 82, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.auth-title {
+    font-size: 64px;
+    color: rgb(60, 60, 60);
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.2;
+    text-align: center;
+    margin-top: -5%;
+}
+
+.authfields {
+    font-family: 'Times New Roman', Times, serif;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    gap: 15px;
+    margin-top: -25px;
+}
+
+.authfields input {
+    font-family: "Jost", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: <weight>;
+    font-style: normal;
+    padding: 20px;
+    width: 500px;
+    height: 50px;
+    font-size: 20px;
+    border-radius: 10px;
+    border: 2px solid rgb(0, 225, 255);
+}
+
+.authfields input:hover {
+    border-color: rgb(0, 166, 255);
+}
+
+.authfields button {
+    padding: 10px 10px;
+    width: 500px;
+    font-size: 20px;
+    border-radius: 10px;
+    border: 2px solid rgb(107, 107, 107);
+    background-color: rgba(0, 225, 255, 0.64);
+    transition: background-color 0.15s ease-in-out;
+    transition: font-size 0.1s ease-in-out;
+}
+
+.authfields button:hover {
+    padding: 10px 10px;
+    width: 500px;
+    font-size: 22px;
+    border-radius: 10px;
+    border: 2px solid rgb(115, 0, 255);
+    background-color: rgba(0, 149, 255, 0.638);
+}
+
+.main p {
+    text-align: center;
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+}
+
+.number-garage{
+    margin-top: -5px;
+    font-size: 12px;
+}
+
+.reg-check {
+    margin-top: 20px;
+    font-size: 20px;
+}
+
+.number-garage span {
+    color:red;
+}
+
+.reg-check a {
+    color: rgb(1, 115, 255);
+    text-decoration: none;
+}
+
