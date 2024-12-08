@@ -7,13 +7,13 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 // данные для OAuth Yndex
 const (
 	CLIENT_ID_Yndex     = "fba88c3d4b524c56a211c216d014ad93"
-	CLIENT_SECRET_Yndex = "3d595570b6f44e69a932a2fec5d059f3"
+	CLIENT_SECRET_Yndex = "----------"//скрыты а так в коде присутствуют 
 )
 
 // данные для OAuth gitHub
 const (
 	CLIENT_ID_git     = "Ov23liWkHlsBA5CJzhKP"
-	CLIENT_SECRET_git = "44fc7ae2d1b5212f8201d187d436869c22ef7517"
+	CLIENT_SECRET_git = "------------"//скрыты а так в коде присутствуют 
 )
 
 //Yndex
