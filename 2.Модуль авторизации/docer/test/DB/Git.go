@@ -1,91 +1,66 @@
 package DB
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
-	"time"
 )
 
-var authenticate struct {
-	is_done bool
-	code    string
-}
-
-type UserGit struct {
-	Name        string
-	Email       string
-	UserID      int64
-	AccessToken string
-	Access      []int
-}
-
-type UserData struct {
-	Id   int64  `json:"id"`
-	Name string `json:"name"`
-}
-
-const (
-	CLIENT_ID     = "Ov23liWkHlsBA5CJzhKP"
-	CLIENT_SECRET = "44fc7ae2d1b5212f8201d187d436869c22ef7517"
-)
-
+// запрос на регестрацию/автаризацию
 func OauthGit(w http.ResponseWriter, r *http.Request) {
-	code := r.URL.Query().Get("code") // Достаем временный код из запроса
+	code := r.URL.Query().Get("code")
+	var response Response
 	if code != "" {
-		authenticate.is_done = true
-		authenticate.code = code
-		users := make(map[int64]*UserGit)
-		accessToken := getAccessToken(authenticate.code)
+		accessToken := getAccessToken(code)
 		userData := getUserData(accessToken)
+		userData.Email = getUserEmail(accessToken)
 
-		if _, ok := users[userData.Id]; !ok {
-			// Добавляем пользователя с дефолтными правами
-			users[userData.Id] = &UserGit{
-				Name:        userData.Name,
-				Email:       "",
-				UserID:      userData.Id,
-				AccessToken: accessToken,
-				Access:      []int{13},
-			}
-
-		}
-		User := users[userData.Id]
-		fmt.Println(User)
-		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-		defer cancel() // Отменяем контекст, когда функция завершится
-		log, err := DbGit(ctx, *User)
-		if err != nil {
-			fmt.Println(err)
+		if userData.UserID == "" {
+			response.ID = "0"
+			response.Log = "ошибка токен устарел"
+			fmt.Println("id: " + userData.UserID)
 		} else {
-			fmt.Println(log)
+
+			response = DbGit(userData)
+			if response.ID == "" {
+				fmt.Println(response.Log)
+			} else {
+				fmt.Println(response.Log + " id: " + response.ID)
+			}
 		}
 
+	} else {
+		response.ID = "0"
+		response.Log = "хз какая ошибка"
+	}
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
 // Меняем временный код на токен доступа
 func getAccessToken(code string) string {
-	// Создаём http-клиент с дефолтными настройками
 	client := http.Client{}
 	requestURL := "https://github.com/login/oauth/access_token"
 
-	// Добавляем данные в виде Формы
 	form := url.Values{}
-	form.Add("client_id", CLIENT_ID)
-	form.Add("client_secret", CLIENT_SECRET)
+	form.Add("client_id", CLIENT_ID_git)
+	form.Add("client_secret", CLIENT_SECRET_git)
 	form.Add("code", code)
 
-	// Готовим и отправляем запрос
 	request, _ := http.NewRequest("POST", requestURL, strings.NewReader(form.Encode()))
-	request.Header.Set("Accept", "application/json") // просим прислать ответ в формате json
-	response, _ := client.Do(request)
+	request.Header.Set("Accept", "application/json")
+	response, err := client.Do(request)
+	if err != nil {
+		fmt.Printf("ошибка в запосе токена :%s", err)
+		return ""
+	}
 	defer response.Body.Close()
 
-	// Достаём данные из тела ответа
 	var responsejson struct {
 		AccessToken string `json:"access_token"`
 	}
@@ -94,18 +69,46 @@ func getAccessToken(code string) string {
 }
 
 // Получаем информацию о пользователе
-func getUserData(AccessToken string) UserData {
-	// Создаём http-клиент с дефолтными настройками
+func getUserData(AccessToken string) UserGit {
 	client := http.Client{}
-	requestURL := "https://api.github.com/user"
+	baseURL := "https://api.github.com/user"
 
-	// Готовим и отправляем запрос
+	request, _ := http.NewRequest("GET", baseURL, nil)
+	request.Header.Set("Authorization", "Bearer "+AccessToken)
+	response, err := client.Do(request)
+	if err != nil {
+		fmt.Printf("ошибка в запосе данных пользователя :%s\n", err)
+		return UserGit{}
+	}
+	defer response.Body.Close()
+	var data formGetInGitHub
+	if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
+		fmt.Printf("ошибка в считывании данных о пользователе json: %s\n", err)
+	}
+	var res UserGit
+	res.Name = data.Name
+	res.UserID = strconv.FormatInt(data.UserID, 10)
+	return res
+}
+
+// Получаем адреса электронной почты пользователя
+func getUserEmail(AccessToken string) string {
+	client := http.Client{}
+	requestURL := "https://api.github.com/user/emails"
+
 	request, _ := http.NewRequest("GET", requestURL, nil)
 	request.Header.Set("Authorization", "Bearer "+AccessToken)
-	response, _ := client.Do(request)
+	response, err := client.Do(request)
+	if err != nil {
+		fmt.Printf("ошибка в запосе почты :%s\n", err)
+		return ""
+	}
 	defer response.Body.Close()
 
-	var data UserData
-	json.NewDecoder(response.Body).Decode(&data)
-	return data
+	var emails []EmailData
+	if err := json.NewDecoder(response.Body).Decode(&emails); err != nil {
+		fmt.Printf("ошибка в считывании данных  emails json: %s\n", err)
+	}
+
+	return emails[0].Email
 }
