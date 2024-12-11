@@ -11,9 +11,13 @@ import (
 func main() {
 	router := http.NewServeMux()
 	router.HandleFunc("/", handleRoot)
+	router.HandleFunc("/oauth", DB.Oauth)
 	router.HandleFunc("/oauth/git", DB.OauthGit)
 	router.HandleFunc("/oauth/yndex", DB.OauthYndex)
-	router.HandleFunc("/rename", DB.ReName)
+	router.HandleFunc("/oauth/code", DB.OauthCode)
+	router.HandleFunc("/oauth/code/res", DB.OauthCodeRes)
+	router.HandleFunc("/func/valedtocen", DB.ValedTocen)
+	router.HandleFunc("/func/rename", DB.ReName)
 	// Запускаем сервер и обрабатываем возможные ошибки
 	log.Println("Запуск сервера на порту :8080")
 	if err := http.ListenAndServe(":8080", router); err != nil {
@@ -23,5 +27,5 @@ func main() {
 }
 
 func handleRoot(rw http.ResponseWriter, _ *http.Request) {
-	rw.Write([]byte("Привет от Cats!"))
+	rw.Write([]byte("просто корень нечего нет"))
 }

@@ -2,6 +2,7 @@ package DB
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 
@@ -11,92 +12,49 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// регестрация/автаризация пользователя от github: | userGit данные типа UserGit
-func DbGit(userGit UserGit) Response {
-	newUser := UserMo{
-		Name:   userGit.Name,
-		Email:  userGit.Email,
-		GitId:  userGit.UserID,
-		YandID: "",
-	}
-	exists, logID, err := mondoChec("gitId", newUser.GitId)
-	var res Response
+// автаризация github или yandex
+func DbAll(email string, name string) (Tokens, error) {
+	exists, logID, err := mondoChec("email", email)
+	var access []string
 	if err != nil {
-		// Обработка ошибки
-		fmt.Println("Ошибка:", err)
-		res.Log, res.ID, res.Name = "ошибка", logID, ""
-	} else if exists {
-		fmt.Println("Пользователь с GitId найден")
-		name, err := seePole("name", logID)
+		return Tokens{}, err
+	}
+	if exists {
+		name, err = seePole("name", logID)
 		if err != nil {
-			fmt.Println("ошибка 32 DB")
+			return Tokens{}, err
 		}
-		res.Log, res.ID, res.Name = "Авторизован", logID, name
-	} else {
-		fmt.Println("Пользователь с GitId не найден")
-		flag, logID, _ := mondoChec("email", newUser.Email)
-		if flag {
-			fmt.Println("Пользователь найден по почте янекса")
-			replaceInfoUser(logID, "gitId", newUser.GitId)
-			name, err := seePole("name", logID)
-			if err != nil {
-				fmt.Println("ошибка 43 DB")
-			}
-			res.Log, res.ID, res.Name = "Авторизован", logID, name
-		} else {
-			res.ID, _ = mondoWrite(newUser)
-			name, err := seePole("name", logID)
-			if err != nil {
-				fmt.Println("ошибка 50 DB")
-			}
-			res.Log, res.Name = "зарегестрирован", name
-		}
-	}
-	return res
-}
-
-// регестрация/автаризация пользователя от яндекс: | userYndex данные типа UserYndex
-func DbYand(userYndex UserYndex) Response {
-	newUser := UserMo{
-		Name:   userYndex.Login,
-		Email:  userYndex.DefaultEmail,
-		GitId:  "",
-		YandID: userYndex.ID,
-	}
-	exists, logID, err := mondoChec("yandID", newUser.YandID)
-	var res Response
-	if err != nil {
-		// Обработка ошибки
-		fmt.Println("Ошибка:", err)
-		res.Log, res.ID, res.Name = "ошибка", logID, ""
-	} else if exists {
-		fmt.Println("Пользователь с YandID найден")
-		name, err := seePole("name", logID)
+		access, err = seePoleA(logID)
 		if err != nil {
-			fmt.Println("ошибка 77 DB")
+			return Tokens{}, err
 		}
-		res.Log, res.ID, res.Name = "Авторизован", logID, name
+		fmt.Println("Автаризован ползователь " + name + " id: " + logID)
 	} else {
-		fmt.Println("Пользователь с YandID не найден")
-		flag, logID, _ := mondoChec("email", newUser.Email)
-		if flag {
-			fmt.Println("Пользователь найден по почте GitHub")
-			replaceInfoUser(logID, "yandID", newUser.YandID)
-			name, err := seePole("name", logID)
-			if err != nil {
-				fmt.Println("ошибка 88 DB")
-			}
-			res.Log, res.ID, res.Name = "Авторизован", logID, name
-		} else {
-			res.ID, _ = mondoWrite(newUser)
-			name, err := seePole("name", logID)
-			if err != nil {
-				fmt.Println("ошибка 95 DB")
-			}
-			res.Log, res.Name = "зарегестрирован", name
+		newUser := UserMo{
+			Name:   "Аноним | " + name,
+			Email:  email,
+			Role:   []string{"Студент"},
+			Access: []string{"user"},
 		}
+		name = "Аноним | " + name
+		access = []string{}
+		logID, err := mondoWrite(newUser)
+		if err != nil {
+			return Tokens{}, err
+		}
+		fmt.Println("зарегестрирован ползователь " + name + " id: " + logID)
 	}
-	return res
+	User := UserMo{
+		Name:   name,
+		Email:  email,
+		Role:   []string{"Студент"},
+		Access: access,
+	}
+	T := Tokens{
+		TokenD: getTokenD(User),
+		TokenU: getTokenU(User),
+	}
+	return T, nil
 }
 
 // проверка существования пользователя: | base поле для проверки | value значение для проверки
@@ -128,7 +86,7 @@ func mondoWrite(newUser UserMo) (string, error) {
 		return "err", err
 	}
 	id, _ := insertResult.InsertedID.(primitive.ObjectID)
-	return id.Hex(), nil
+	return id.Hex(), nil //id и ошибка
 }
 
 // замена определёного поля: | id пользователя | base поле для изменения | value значение для изменения
@@ -167,6 +125,51 @@ func seePole(base string, id string) (string, error) {
 		return "", nil
 	}
 	return value.(string), nil
+}
+func seePoleA(id string) ([]string, error) {
+	collection := getCollection() // Убедитесь, что эта функция определена для возврата коллекции MongoDB
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err // Возвращаем nil вместо пустого среза для лучшей обработки ошибок
+	}
+
+	filter := bson.M{"_id": objID}
+	var result bson.M
+	err = collection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil // Возвращаем nil, если документ не найден
+		}
+		return nil, err // Возвращаем ошибку, если что-то другое пошло не так
+	}
+
+	value, ok := result["access"]
+	if !ok {
+		return nil, nil // Возвращаем nil, если поле "access" не существует
+	}
+
+	// Проверяем, является ли значение массивом строк
+	accessArray, ok := value.(primitive.A)
+	if !ok {
+		return nil, errors.New("значение доступа не является массивом") // Возвращаем ошибку, если значение не массив
+	}
+
+	// Преобразуем массив в срез строк
+	var accessStrings []string
+	for _, v := range accessArray {
+		strValue, ok := v.(string)
+		if !ok {
+			return nil, errors.New("значение в массиве доступа не является строкой") // Возвращаем ошибку, если элемент не строка
+		}
+		accessStrings = append(accessStrings, strValue)
+	}
+
+	// Проверка на пустой массив
+	if len(accessStrings) == 0 {
+		return nil, nil // Возвращаем nil, если массив пустой
+	}
+
+	return accessStrings, nil // Возвращаем массив строк
 }
 
 // соеденение с MongoDB

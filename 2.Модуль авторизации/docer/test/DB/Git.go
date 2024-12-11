@@ -7,39 +7,87 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"text/template"
 )
 
 // запрос на регестрацию/автаризацию
 func OauthGit(w http.ResponseWriter, r *http.Request) {
 	code := r.URL.Query().Get("code")
-	var response Response
+	state := r.URL.Query().Get("state")
 	if code != "" {
 		accessToken := getAccessToken(code)
-		userData := getUserData(accessToken)
-		userData.Email = getUserEmail(accessToken)
-
-		if userData.UserID == "" {
-			response.ID = "0"
-			response.Log = "ошибка токен устарел"
-			fmt.Println("id: " + userData.UserID)
+		if accessToken == "" {
+			if info, exists := _tokensInfo[state]; exists {
+				info.State = "ошибка в обене токена"
+				_tokensInfo[state] = info
+			}
+			http.Error(w, "ошибка в обене токена", http.StatusUnauthorized)
+			return
 		} else {
+			userGit := getuserGit(accessToken)
+			userGit.Email = getUserEmail(accessToken)
 
-			response = DbGit(userData)
-			if response.ID == "" {
-				fmt.Println(response.Log)
+			if userGit.Email != "" {
+				T, err := DbAll(userGit.Email, userGit.Name)
+				if err != nil {
+					http.Error(w, "errorG", http.StatusUnauthorized)
+					fmt.Print(err)
+					return
+				}
+				if info, exists := _tokensInfo[state]; exists {
+					info.State = "доступ получен"
+					info.TokenD = T.TokenD
+					info.TokenU = T.TokenU
+					_tokensInfo[state] = info
+
+				}
+				w.WriteHeader(http.StatusOK)
+
+				// Define the HTML template
+				tmpl := `
+					<!DOCTYPE html>
+					<html lang="ru">
+					<head>
+						<meta charset="UTF-8">
+						<title>Успешная авторизация</title>
+					</head>
+					<body>
+						<h1>Авторизация прошла успешно!</h1>
+						<p>Доступ предоставлен.</p>
+						<a href="/">Вернуться в приложение</a>
+					</body>
+					</html>
+				`
+
+				// Parse the template
+				t, err := template.New("response").Parse(tmpl)
+				if err != nil {
+					http.Error(w, "Ошибка при обработке шаблона", http.StatusInternalServerError)
+					return
+				}
+
+				// Execute the template and write it to the response
+				if err := t.Execute(w, nil); err != nil {
+					http.Error(w, "Ошибка при выводе шаблона", http.StatusInternalServerError)
+				}
+				return
 			} else {
-				fmt.Println(response.Log + " id: " + response.ID)
+				if info, exists := _tokensInfo[state]; exists {
+					info.State = "токен устарел"
+					_tokensInfo[state] = info
+				}
+				http.Error(w, "токен устарел", http.StatusUnauthorized)
+				return
 			}
 		}
-
 	} else {
-		response.ID = "0"
-		response.Log = "хз какая ошибка"
+		if info, exists := _tokensInfo[state]; exists {
+			info.State = "в доступе отказано"
+			_tokensInfo[state] = info
+		}
+		http.Error(w, "Неудачная авторизация. в доступе отказано.", http.StatusUnauthorized)
 	}
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+
 }
 
 // Меняем временный код на токен доступа
@@ -69,7 +117,7 @@ func getAccessToken(code string) string {
 }
 
 // Получаем информацию о пользователе
-func getUserData(AccessToken string) UserGit {
+func getuserGit(AccessToken string) UserGit {
 	client := http.Client{}
 	baseURL := "https://api.github.com/user"
 
