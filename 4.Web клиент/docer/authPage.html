@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Авторизация</h1>
+    <p>Пожалуйста, авторизуйтесь через:</p>
+    <button onclick="authorize('git')">GitHub</button>
+    <button onclick="authorize('yndex')">Яндекс ID</button>
+    <button onclick="authorize('code')">Код</button>
+
+    <script>
+        function authorize(type) {
+            // Генерируем новый токен для state
+            const loginToken = 'loginToken'; // Здесь можно использовать реальный токен, если нужно
+            window.location.href = `/login?type=${type}&state=${loginToken}`;
+        }
+    </script>
+</body>
+</html>
