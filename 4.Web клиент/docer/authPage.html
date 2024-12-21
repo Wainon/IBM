@@ -18,7 +18,8 @@
     </div>
     <script>
         function authorize(type) {
-            const loginToken = 'loginToken';
+            // Генерируем новый токен для state
+            const loginToken = 'loginToken'; // Здесь можно использовать реальный токен, если нужно
             window.location.href = `/login?type=${type}&state=${loginToken}`;
         }
     </script>
