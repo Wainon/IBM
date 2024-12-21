@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Код ответа</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Изменено на flex-start для выравнивания по верхней части */
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            padding-top: 20px; /* Добавлено отступ сверху */
+        }
+        h1 {
+            color: #333;
+        }
+        .code {
+            font-size: 24px;
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .message {
+            font-size: 16px;
+            color: #666;
+            margin: 10px 0;
+            text-align: center; /* Центрирование текста */
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Код ответа</h1>
+    <div class="code" id="code"></div>
+    <div class="message">Переход возможен только если вы вошли на другом устройстве.</div> <!-- Новый текст -->
+    <a href="/" class="button">Войти</a>
+    <script>
+        // Получаем код ответа из переменной, переданной с сервера
+        const code = '<%= code %>';
+        document.getElementById('code').innerText = `${code}`;
+    </script>
+</body>
+</html>

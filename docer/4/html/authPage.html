@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация</title>
+    <link rel="stylesheet" type="text/css" href="/css/authPage.css"> 
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Авторизация</h1>
+        </header>
+        <div class="button-container"> 
+            <button onclick="authorize('git')">GitHub</button>
+            <button onclick="authorize('yndex')">Яндекс ID</button>
+            <button onclick="authorize('code')">Код</button>
+        </div>
+    </div>
+
+    <script>
+        function authorize(type) {
+            // Генерируем новый токен для state
+            const loginToken = 'loginToken'; 
+            window.location.href = `/login?type=${type}&state=${loginToken}`;
+        }
+    </script>
+</body>
+</html>

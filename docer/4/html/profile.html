@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/profile.css">
+    <title>Личный кабинет</title>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Личный кабинет</h1>
+        </header>        
+        <section class="user-info">
+            <h2>Информация о пользователе</h2>
+            <p><strong>Имя:</strong> Иван Иванов</p>
+            <p><strong>Email:</strong> ivan.ivanov@example.com</p>
+        </section>
+
+        <section class="disciplines">
+            <h2>Список дисциплин</h2>
+            <ul>
+                <li>Математика</li>
+                <li>Физика</li>
+                <li>Информатика</li>
+                <li>Химия</li>
+            </ul>
+        </section>
+
+        <section class="logout">
+            <h2>Выход</h2>
+            <button onclick="logout()">Выйти из аккаунта на этом устройстве</button>
+            <button onclick="logoutAll()">Выйти из аккаунта на всех устройствах</button>
+        </section>
+    </div>
+
+    <script>
+        function logout() {
+            window.location.href = '/logout'; // Перенаправление на /logout
+        }
+
+        function logoutAll() {
+            window.location.href = '/logout?all=true'; // Перенаправление на /logout с параметром
+        }
+    </script>
+
+<footer>
+    <p>&copy; Все права защищены. кроме евврев</p>
+</footer>
+
+</body>
+</html>
