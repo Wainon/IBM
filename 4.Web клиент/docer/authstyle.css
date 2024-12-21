@@ -1,0 +1,93 @@
+body {
+    margin: 0; /* Убираем отступы по умолчанию */
+    overflow: hidden; /* Скрываем переполнение */
+    background-color: black;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(https://sotni.ru/wp-content/uploads/2023/08/aenami-alena-velichko-28.webp);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover; /* Изображение занимает весь фон */
+    filter: blur(5px); /* Применяем размытие */
+    z-index: -1; /* Устанавливаем z-index ниже, чтобы другие элементы были поверх */
+}
+
+.container {
+    background-color: rgba(252, 252, 252, 0.8); /* Полупрозрачный фон */
+    border-radius: 30px;
+    width: 500px;
+    height: 250px;
+    margin: auto;
+    margin-top: 15%;
+    border: 1px solid rgb(145, 165, 255);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.container h1 {
+    margin: 30px;
+    text-decoration: double;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(46, 46, 46);
+    font-size: 35px;
+}
+
+.container p {
+    text-align: center;
+    margin-top: -10px;
+    font-size: 20px;
+    color: rgb(52, 140, 255);
+}
+
+.container .buts {
+    display: flex; /* Включаем Flexbox для контейнера кнопок */
+    justify-content: space-between; /* Распределяем кнопки по ширине */
+    margin-left: 10px; /* Отступ слева */
+    margin-top: -10px;
+}
+
+.container .buts button {
+    flex: 1; /* Позволяет кнопкам занимать равное пространство */
+    margin-right: 14px; /* Отступ между кнопками */
+    margin-left: 1px;
+    height: 35px;
+    border-radius: 10px;
+    border: 1px solid rgb(138, 138, 138);
+    display: flex; /* Включаем Flexbox для кнопок */
+    align-items: center; /* Выравниваем по центру по вертикали */
+    justify-content: center; /* Выравниваем по центру по горизонтали */
+}
+
+.gitauth {
+    background-color: rgb(241, 241, 241);
+}
+
+.codeauth {
+    margin-top: 12px;
+    margin-left: 10px;
+    width: 95%;
+    text-align: center;
+    height: 35px;
+    background-color: rgb(231, 231, 231);
+    border-radius: 10px;
+    border: 1px solid rgb(184, 184, 184);
+}
+
+.logo {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle; /* Выравнивание по центру */
+}
+
+button {
+    text-align: center;
+    justify-content: center;
+    box-shadow: 3px 3px 5px rgb(131, 131, 131);
+}
