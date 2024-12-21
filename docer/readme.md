@@ -1,0 +1,2 @@
+./runWeb.sh
+./runOuth.sh
