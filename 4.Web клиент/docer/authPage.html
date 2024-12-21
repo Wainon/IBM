@@ -1,34 +1,24 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Авторизация</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 10px;
-            cursor: pointer;
-        }
-    </style>
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Авторизация</h1>
-    <p>Пожалуйста, авторизуйтесь через:</p>
-    <button onclick="authorize('git')">GitHub</button>
-    <button onclick="authorize('yndex')">Яндекс ID</button>
-    <button onclick="authorize('code')">Код</button>
-
+    <div class="container">
+        <h1>АВТОРИЗАЦИЯ</h1>
+        <p>Пожалуйста, авторизуйтесь через:</p>
+        <div class="buts">
+            <button onclick="authorize('git')" class="gitauth"><img class="logo" src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="X">   Войти через GitHub</button>
+            <button onclick="authorize('yndex')"><img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Yandex_Browser_icon.svg/2048px-Yandex_Browser_icon.svg.png" alt="X">   Яндекс ID</button>
+        </div>
+        <button onclick="authorize('code')" class="codeauth"><img class="logo" src="https://icons.veryicon.com/png/o/internet--web/sesame-treasure/login-password-3.png" alt="X">   Код</button>
+    </div>
     <script>
         function authorize(type) {
-            // Генерируем новый токен для state
-            const loginToken = 'loginToken'; // Здесь можно использовать реальный токен, если нужно
+            const loginToken = 'loginToken';
             window.location.href = `/login?type=${type}&state=${loginToken}`;
         }
     </script>
