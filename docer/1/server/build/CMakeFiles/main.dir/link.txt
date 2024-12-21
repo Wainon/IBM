@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/main.dir/main.cpp.o CMakeFiles/main.dir/req.cpp.o -o main  -lpthread /workspaces/docer/1/include/vcpkg/installed/x64-linux/debug/lib/libssl.a /workspaces/docer/1/include/vcpkg/installed/x64-linux/debug/lib/libcrypto.a -ldl 
