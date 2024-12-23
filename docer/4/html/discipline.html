@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дисциплина</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        .discipline {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative; /* Для позиционирования кнопки */
+        }
+        .back-button {
+            position: absolute; /* Абсолютное позиционирование */
+            top: 10px; /* Отступ сверху */
+            right: 10px; /* Отступ справа */
+            padding: 10px 15px; /* Отступы для кнопки */
+            background-color: #007bff; /* Цвет фона кнопки */
+            color: white; /* Цвет текста */
+            border: none; /* Убираем рамку */
+            border-radius: 5px; /* Скругление углов */
+            cursor: pointer; /* Указатель при наведении */
+            font-size: 16px; /* Размер шрифта */
+        }
+        .back-button:hover {
+            background-color: #0056b3; /* Цвет фона при наведении */
+        }
+        .questions {
+            margin-top: 20px;
+        }
+        .question {
+            cursor: pointer; /* Указатель при наведении */
+            padding: 10px; /* Отступы для удобства */
+            color: black; /* Цвет текста */
+            text-decoration: none; /* Убираем подчеркивание */
+            background: #e9ecef; /* Цвет фона */
+            border-radius: 3px; /* Скругление углов */
+            margin: 5px 0; /* Отступы между вопросами */
+            text-align: left; /* Выравнивание текста по левому краю */
+        }
+        .question:hover {
+            background-color: #f0f0f0; /* Цвет фона при наведении */
+        }
+    </style>
+</head>
+<body>
+
+<div class="discipline">
+    <button class="back-button" onclick="goBack()">Назад</button> <!-- Кнопка "Назад" -->
+    <h1 id="discipline-name">Загрузка...</h1>
+    <p><strong>Преподаватель:</strong> <span id="teacher-name">Загрузка...</span></p>
+    
+    <div class="questions">
+        <h2>Вопросы:</h2>
+        <div id="questions-list">
+            <!-- Вопросы будут подгружены сюда -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // Функция для подгрузки данных о дисциплине
+    async function loadDisciplineData() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+
+        try {
+            const response = await fetch(`http://localhost/discipline/get?id=${id}`);
+            if (!response.ok) {
+                throw new Error('Сеть не отвечает');
+            }
+            const disciplineData = await response.json();
+
+            // Обновляем элементы на странице
+            document.getElementById('discipline-name').innerText = disciplineData.name;
+            document.getElementById('teacher-name').innerText = disciplineData.teacher;
+
+            const questionsList = document.getElementById('questions-list');
+            questionsList.innerHTML = ''; // Очищаем список перед добавлением новых вопросов
+            disciplineData.questions.forEach(question => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerText = question.text; // Текст вопроса
+                questionDiv.onclick = () => handleQuestionClick(question.id); // Обработчик клика
+                questionsList.appendChild(questionDiv);
+            });
+        } catch (error) {
+            console.error('Ошибка при загрузке данных:', error);
+            document.getElementById('discipline-name').innerText = 'Ошибка загрузки';
+            document.getElementById('teacher-name').innerText = '';
+            document.getElementById('questions-list').innerText = 'Не удалось загрузить вопросы.';
+        }
+    }
+
+ // Обработчик клика на вопрос
+ function handleQuestionClick(questionId) {
+        // Переадресация на страницу вопроса
+        window.location.href = `http://localhost/question?id=${questionId}`;
+    }
+
+    // Функция для возврата на главную страницу
+    function goBack() {
+        window.location.href = 'http://localhost'; // Переход на главную страницу
+    }
+
+    // Загружаем данные при загрузке страницы
+    window.onload = loadDisciplineData;
+</script>
+
+</body>
+</html>

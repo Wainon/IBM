@@ -56,3 +56,29 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+.discipline-item {
+    cursor: pointer; /* Указатель при наведении */
+    padding: 10px; /* Отступы для удобства */
+    color: black; /* Цвет текста */
+    text-decoration: none; /* Убираем подчеркивание */
+}
+.discipline-item:hover {
+    background-color: #f0f0f0; /* Цвет фона при наведении */
+}
+
+.name-container {
+    margin-left: auto; /* Отодвигает кнопку вправо */
+}
+
+.edit-button {
+    margin-left: 10px; /* Отступ между именем и кнопкой */
+}
+.user-info p {
+    display: flex; /* Используем Flexbox для выравнивания */
+    justify-content: space-between; /* Разделяем пространство между элементами */
+    align-items: center; /* Выравниваем элементы по центру по вертикали */
+}
+
+.name-container {
+    margin-left: auto; /* Отодвигаем контейнер с кнопкой к правому краю */
+}

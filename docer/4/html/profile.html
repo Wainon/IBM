@@ -13,28 +13,135 @@
         </header>        
         <section class="user-info">
             <h2>Информация о пользователе</h2>
-            <p><strong>Имя:</strong> Иван Иванов</p>
-            <p><strong>Email:</strong> ivan.ivanov@example.com</p>
+            <p>
+                <strong>Имя:</strong>
+                <span id="user-name">Загрузка...</span>
+                <span class="name-container">
+                    <button id="edit-name-button" onclick="editName()" class="edit-button">Сменить имя</button>
+                    <div class="name-buttons"></div> 
+                </span>
+            </p>
+            <p1>
+                <strong>Email:</strong>
+                <span id="user-email">Загрузка...</span>
+            </p1>
         </section>
 
         <section class="disciplines">
             <h2>Список дисциплин</h2>
-            <ul>
-                <li>Математика</li>
-                <li>Физика</li>
-                <li>Информатика</li>
-                <li>Химия</li>
+            <ul id="disciplines-list">
+                <li>Загрузка...</li>
             </ul>
         </section>
 
-        <section class="logout">
+        <section class="logout" id="logout-section">
             <h2>Выход</h2>
-            <button onclick="logout()">Выйти из аккаунта на этом устройстве</button>
-            <button onclick="logoutAll()">Выйти из аккаунта на всех устройствах</button>
+            <button id="logout-button" onclick="logout()">Выйти из аккаунта на этом устройстве</button>
+            <button id="logout-all-button" onclick="logoutAll()">Выйти из аккаунта на всех устройствах</button>
+        </section>
+
+        <section id="redirect-section" style="display: none;">
+            <h2>Перейти на главную страницу</h2>
+            <button onclick="redirectToHome()">На главную</button>
         </section>
     </div>
 
     <script>
+        let isEditing = false;
+
+        async function fetchProfileData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+
+            try {
+                const response = await fetch(`http://localhost/profile/get?id=${id}`);
+                if (!response.ok) {
+                    throw new Error('Не удалось загрузить данные профиля');
+                }
+
+                const data = await response.json();
+                
+                // Обновление информации о пользователе
+                document.getElementById('user-name').textContent = data.user.name || 'Не указано';
+                document.getElementById('user-email').textContent = data.user.email || 'Не указано';
+
+                // Обновление списка дисциплин
+                const disciplinesList = document.getElementById('disciplines-list');
+                disciplinesList.innerHTML = ''; // Очистить список перед добавлением новых элементов
+                if (data.disciplines && data.disciplines.length > 0) {
+                    data.disciplines.forEach(discipline => {
+                        const li = document.createElement('li');
+                        li.className = 'discipline-item'; // Добавляем класс для стилизации
+                        li.textContent = discipline.name; // Имя дисциплины
+                        li.onclick = () => {
+                            window.location.href = `http://localhost/discipline?id=${discipline.id}`; // Переход на страницу дисциплины
+                        };
+                        disciplinesList.appendChild(li);
+                    });
+                } else {
+                    disciplinesList.innerHTML = '<li>Нет дисциплин</li>';
+                }
+
+                // Проверка на наличие id
+                if (id) {
+                    // Убираем кнопки смены имени и выхода
+                    document.getElementById('edit-name-button').style.display = 'none';
+                    document.getElementById('logout-section').style.display = 'none';
+                    // Показываем кнопку для перехода на главную
+                    document.getElementById('redirect-section').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('user-name').textContent = 'Ошибка загрузки';
+                document.getElementById('user-email').textContent = 'Ошибка загрузки';
+                const disciplinesList = document.getElementById('disciplines-list');
+                disciplinesList.innerHTML = '<li>Ошибка загрузки</li>';
+            }
+        }
+
+        function editName() {
+            if (!isEditing) {
+                const userNameElement = document.getElementById('user-name');
+                const currentName = userNameElement.textContent;
+
+ // Создаем текстовое поле для ввода нового имени
+ const input = document.createElement('input');
+                input.type = 'text';
+                input.value = currentName;
+                input.id = 'name-input';
+
+                // Создаем кнопку "Сохранить"
+                const saveButton = document.createElement('button');
+                saveButton.textContent = 'Сохранить';
+                saveButton.onclick = saveName;
+
+                // Заменяем текст имени на текстовое поле и кнопку
+                userNameElement.textContent = '';
+                userNameElement.appendChild(input);
+                document.querySelector('.name-buttons').appendChild(saveButton); // Добавляем кнопку в контейнер
+
+                isEditing = true;
+            }
+        }       
+
+        async function saveName() {
+            const newName = document.getElementById('name-input').value;
+            const urlParams = new URLSearchParams(window.location.search);
+
+            try {
+                const response = await fetch(`http://localhost/func?type=updateName&newName=${encodeURIComponent(newName)}`, {
+                    method: 'GET',
+                });
+                if (!response.ok) {
+                    throw new Error('Не удалось сохранить новое имя');
+                }
+
+                // Перезагрузка страницы после успешного сохранения
+                location.reload();
+            } catch (error) {
+                alert('Ошибка при сохранении имени: ' + error.message);
+            }
+        }
+            
         function logout() {
             window.location.href = '/logout'; // Перенаправление на /logout
         }
@@ -42,11 +149,17 @@
         function logoutAll() {
             window.location.href = '/logout?all=true'; // Перенаправление на /logout с параметром
         }
+
+        function redirectToHome() {
+            window.location.href = 'http://localhost'; // Перенаправление на главную страницу
+        }
+
+        // Вызов функции для загрузки данных профиля
+        fetchProfileData();
     </script>
 
-<footer>
-    <p>&copy; Все права защищены. кроме евврев</p>
-</footer>
-
+    <footer>
+        <p>&copy; Все права защищены. кроме евреев</p>
+    </footer>
 </body>
 </html>
