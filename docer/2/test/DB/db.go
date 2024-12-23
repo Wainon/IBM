@@ -58,7 +58,7 @@ func DbAll(email string, name string) (Tokens, error) {
 		Access: access,
 	}
 	T := Tokens{
-		TokenD: getTokenD(User),
+		TokenD: getTokenD(access),
 		TokenU: getTokenU(User),
 	}
 	return T, nil

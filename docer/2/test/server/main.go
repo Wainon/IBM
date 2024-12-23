@@ -18,6 +18,7 @@ func main() {
 	router.HandleFunc("/oauth/code/res", DB.OauthCodeRes)
 	router.HandleFunc("/func/valedtocen", DB.ValedTocen)
 	router.HandleFunc("/func/rename", DB.ReName)
+	router.HandleFunc("/func/updateAccessToken", DB.UpdateAccessToken)
 	// Запускаем сервер и обрабатываем возможные ошибки
 	log.Println("Запуск сервера на порту :8080")
 	if err := http.ListenAndServe(":8080", router); err != nil {
