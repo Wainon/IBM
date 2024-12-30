@@ -31,10 +31,10 @@
         display: flex;
         text-align: left;
         justify-content: space-between;
-        align-items: center; /* Center items vertically */
+        align-items: center; 
         border-radius: 40px;
         position: relative;
-        font-family: Arial, Helvetica, sans-serif; /* Font for navbar */
+        font-family: Arial, Helvetica, sans-serif; 
       }
 
       .navbar ul {
@@ -45,7 +45,7 @@
 
       .navbar ul li {
         color: white;
-        position: relative; /* Position for dropdown */
+        position: relative; 
       }
 
       .navbar a {
@@ -54,42 +54,42 @@
       }
 
       .dropdown {
-        display: none; /* Hidden by default */
-        position: absolute; /* Position relative to parent */
-        background-color: #3a3a3a; /* Background color */
-        border: 1px solid #ccc; /* Border color */
-        border-radius: 5px; /* Rounded corners */
-        z-index: 1000; /* Layering */
-        padding: 10px; /* Inner padding */
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Shadow */
+        display: none;
+        position: absolute;
+        background-color: #3a3a3a;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        z-index: 1000;
+        padding: 10px; 
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); 
         color: white;
       }
 
       .navbar ul li:hover .dropdown {
-        display: block; /* Show dropdown on hover */
+        display: block;
       }
 
       .dropdown ul {
-        list-style: none; /* Remove list markers */
-        padding: 0; /* Remove padding */
-        margin: 0; /* Remove margin */
+        list-style: none; 
+        padding: 0;
+        margin: 0;
       }
 
       .dropdown ul li {
-        padding: 5px 0; /* Padding for dropdown items */
+        padding: 5px 0; 
       }
 
       .dropdown ul li a {
-        text-decoration: none; /* Remove underline */
-        color: white; /* Text color */
-        display: block; /* Make the link fill the list item */
-        transition: all 0.3s ease; /* Smooth transition */
+        text-decoration: none;
+        color: white;
+        display: block; 
+        transition: all 0.3s ease;
       }
 
       .dropdown ul li a:hover {
-        color: white; /* Change text color on hover */
-        background-color: rgb(101, 101, 101); /* Background color on hover */
-        box-shadow: 0 0 10px rgb(52, 52, 52); /* Blue glow effect */
+        color: white;
+        background-color: rgb(101, 101, 101); 
+        box-shadow: 0 0 10px rgb(52, 52, 52);
       }
 
       main {
@@ -263,7 +263,7 @@
       function loadTests() {
         const getTests = JSON.parse(localStorage.getItem("tests")) || [];
         const testsList = document.querySelector(".tests");
-        testsList.innerHTML = ""; // Очистка списка тестов
+        testsList.innerHTML = "";
 
         if (getTests.length > 0) {
           getTests.forEach((item, index) => {
@@ -284,10 +284,9 @@
 
         questsCounter.textContent = getTests.length;
 
-        // Добавляем обработчик клика для каждого теста
         document.querySelectorAll(".test-item").forEach((item) => {
           item.addEventListener("click", (event) => {
-            event.preventDefault(); // Предотвращаем переход по ссылке
+            event.preventDefault();
             const index = item.getAttribute("data-index");
             displayTest(index);
           });
@@ -330,7 +329,6 @@
     </ul>
 `;
 
-          // Восстанавливаем выбранные ответы, если они есть
           test.questions.forEach((q, i) => {
             const selectedAnswer = localStorage.getItem(
               `selectedAnswer_${index}_${i}`
@@ -340,18 +338,15 @@
                 `input[name="answer${i}"][value="${selectedAnswer}"]`
               );
               if (answerInput) {
-                answerInput.checked = true; // Устанавливаем выбранный ответ
+                answerInput.checked = true; 
               }
             }
-
-            // Добавляем обработчики событий для радиокнопок
             const answers = document.querySelectorAll(
               `input[name="answer${i}"]`
             );
             answers.forEach((answer) => {
               answer.addEventListener("change", (event) => {
                 const selectedAnswer = event.target.value;
-                // Сохраняем выбранный ответ в localStorage
                 localStorage.setItem(
                   `selectedAnswer_${index}_${i}`,
                   selectedAnswer
@@ -362,7 +357,6 @@
         }
       }
 
-      // Загрузка тестов при загрузке страницы
       loadTests();
 
       if (createNew) {
