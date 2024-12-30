@@ -9,24 +9,24 @@
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
         padding: 20px;
-        background-color: #2c2f33; /* Темно-серый фон */
-        color: #ffffff; /* Белый текст */
+        background-color: #2c2f33; 
+        color: #ffffff;
       }
       h1 {
         text-align: center;
-        color: #ffffff; /* Белый текст заголовка */
-        font-weight: normal; /* Уменьшение толщины шрифта */
-        cursor: text; /* Указатель для редактирования */
-        border: none; /* Убираем границу */
-        padding: 0; /* Убираем отступы */
-        white-space: nowrap; /* Запрет на перенос текста */
-        overflow: hidden; /* Скрытие переполненного текста */
-        text-overflow: ellipsis; /* Добавление многоточия для длинного текста */
+        color: #ffffff;
+        font-weight: normal;
+        cursor: text;
+        border: none;
+        padding: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; 
       }
       .container {
         max-width: 600px;
         margin: auto;
-        background-color: #3c4043; /* Темно-серый контейнер */
+        background-color: #3c4043; 
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         padding: 20px;
@@ -34,30 +34,30 @@
       .question-block {
         margin-bottom: 20px;
         padding: 15px;
-        border: 1px solid #4b4f54; /* Темно-серая граница */
+        border: 1px solid #4b4f54;
         border-radius: 8px;
-        background-color: #4b4f54; /* Темно-серый фон для вопросов */
+        background-color: #4b4f54;
       }
       label {
         display: block;
         margin: 10px 0 5px;
-        font-weight: normal; /* Уменьшение толщины шрифта */
-        color: #ffffff; /* Белый текст для лейблов */
+        font-weight: normal; 
+        color: #ffffff;
       }
       input[type="text"],
       select {
-        width: calc(100% - 20px); /* Уменьшение ширины для учета отступов */
+        width: calc(100% - 20px);
         padding: 10px;
         margin-bottom: 10px;
-        border: 1px solid #6b6e73; /* Светло-серая граница */
+        border: 1px solid #6b6e73;
         border-radius: 5px;
         font-size: 14px;
-        background-color: #3c4043; /* Темно-серый фон для полей ввода */
-        color: #ffffff; /* Белый текст в полях ввода */
+        background-color: #3c4043; 
+        color: #ffffff; 
       }
       button {
         padding: 10px 15px;
-        background-color: #0088cc; /* Темно-синий цвет кнопок */
+        background-color: #0088cc; 
         color: white;
         border: none;
         border-radius: 5px;
@@ -66,10 +66,10 @@
         transition: background-color 0.3s;
       }
       button:hover {
-        background-color: #007bb5; /* Более темный синий при наведении */
+        background-color: #007bb5;
       }
       button:disabled {
-        background-color: #b0bec5; /* Серый цвет для отключенных кнопок */
+        background-color: #b0bec5;
         cursor: not-allowed;
       }
     </style>
@@ -133,24 +133,23 @@
           questionsContainer.appendChild(questionDiv);
         });
 
-      // Обработчик для поля заголовка
       const titleInput = document.getElementById("surveyTitle");
       const defaultTitleText = "Введите название теста...";
 
       titleInput.addEventListener("focus", () => {
         if (titleInput.innerText === defaultTitleText) {
-          titleInput.innerText = ""; // Очищаем текст при фокусе
+          titleInput.innerText = "";
         }
       });
 
       titleInput.addEventListener("blur", () => {
         if (titleInput.innerText.trim() === "") {
-          titleInput.innerText = defaultTitleText; // Восстанавливаем текст, если поле пустое
+          titleInput.innerText = defaultTitleText; 
         }
       });
 
       async function writeNewQuestion() {
-        const getTitle = document.getElementById("surveyTitle").innerText; // Получаем текст заголовка
+        const getTitle = document.getElementById("surveyTitle").innerText;
         const getText = document.getElementById("surveyDescription").value;
 
         if (!getTitle || getTitle === defaultTitleText) {
@@ -178,7 +177,6 @@
             `correctAnswer${i}`
           ).value;
 
-          // Проверка на пустые варианты ответов
           if (!answer1 || !answer2 || !answer3 || !answer4) {
             return alert(
               "Пожалуйста, заполните все варианты ответов для каждого вопроса."
@@ -192,7 +190,6 @@
           });
         }
 
-        // Сохранение теста в localStorage
         tests.push({
           title: getTitle,
           description: getText,
@@ -202,7 +199,6 @@
         localStorage.setItem("tests", JSON.stringify(tests));
         alert("Тест успешно сохранен!");
 
-        // Перенаправление на страницу index.html
         window.location.href = "index.html";
       }
     </script>
