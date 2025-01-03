@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Создание теста</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      button {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Создание теста</h1>
+      <label for="title">Название теста:</label>
+      <input type="text" id="title" placeholder="Введите название" />
+
+      <div id="questions"></div>
+
+      <button id="add-question">Добавить вопрос</button>
+      <button id="save-test">Сохранить тест</button>
+    </div>
+
+    <script>
+      document.getElementById("add-question").addEventListener("click", () => {
+        const questionsDiv = document.getElementById("questions");
+        const questionIndex = questionsDiv.children.length;
+
+        const questionDiv = document.createElement("div");
+        questionDiv.innerHTML = `
+                <label for="question${questionIndex}">Вопрос ${
+          questionIndex + 1
+        }:</label>
+                <input type="text" id="question${questionIndex}" placeholder="Введите вопрос">
+                <label for="answer${questionIndex}">Ответ:</label>
+                <input type="text" id="answer${questionIndex}" placeholder="Введите ответ">
+            `;
+        questionsDiv.appendChild(questionDiv);
+      });
+
+      document
+        .getElementById("save-test")
+        .addEventListener("click", async () => {
+          const title = document.getElementById("title").value;
+          const questionsDiv = document.getElementById("questions");
+          const questions = [];
+
+          for (let i = 0; i < questionsDiv.children.length; i++) {
+            const question = document.getElementById(`question${i}`).value;
+            const answer = document.getElementById(`answer${i}`).value;
+            questions.push({ question, answer });
+          }
+
+          const test = { title, questions };
+
+          try {
+            const response = await fetch("/upload", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(test),
+            });
+
+            if (response.ok) {
+              alert("Тест успешно сохранен");
+            } else {
+              alert("Ошибка при сохранении теста");
+            }
+          } catch (error) {
+            alert("Не удалось подключиться к серверу");
+          }
+        });
+    </script>
+  </body>
+</html>
