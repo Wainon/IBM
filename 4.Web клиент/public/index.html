@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Тесты</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background-color: #1e1e1e;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      .container {
+        width: 97%;
+        padding: 0 10px;
+        margin: 0 auto;
+        background-color: #2e2e2e;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+        border-radius: 30px;
+      }
+
+      .navbar {
+        display: flex;
+        text-align: left;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 40px;
+        position: relative;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .navbar ul {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+      }
+
+      .navbar ul li {
+        position: relative;
+      }
+
+      .dropdown {
+        display: none;
+        position: absolute;
+        background-color: #3a3a3a;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        z-index: 1000;
+        padding: 5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        color: white;
+        width: 150px;
+        top: 100%; /* Исправлено для прилегания к кнопке */
+        left: 0;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+
+      .navbar ul li:hover .dropdown {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .dropdown ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .dropdown ul li {
+        padding: 5px 0;
+      }
+
+      .dropdown ul li a {
+        text-decoration: none;
+        color: white;
+        display: block;
+        transition: all 0.3s ease;
+        padding: 5px 10px;
+      }
+
+      .dropdown ul li a:hover {
+        color: white;
+        background-color: rgb(101, 101, 101);
+        box-shadow: 0 0 10px rgb(52, 52, 52);
+      }
+
+      main {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        height: 90vh;
+      }
+
+      main section {
+        width: 50%;
+        margin: 10px;
+        border-radius: 25px;
+        box-shadow: 4px 4px 5px rgb(27, 27, 27);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .all-tests {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        background-color: #3a3a3a;
+        padding: 20px;
+        flex: 1;
+        overflow-y: auto;
+        position: relative;
+      }
+
+      .current-test {
+        background-color: #3c4043;
+        flex: 1;
+        margin-left: 0px;
+        width: 400px;
+        color: rgb(230, 223, 215);
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .current-test p {
+        margin-left: 18px;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .current-test h1 {
+        margin-left: 18px;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .current-test h2 {
+        color: rgb(230, 223, 215);
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+        font-size: 30px;
+      }
+
+      .all-tests div {
+        background-color: rgb(161, 233, 255);
+        border-radius: 15px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: rgb(0, 0, 0);
+        padding-left: 10px;
+        width: 650px;
+        margin-bottom: 0px;
+        box-shadow: 2px 2px 5px rgb(113, 113, 113);
+        margin-left: -30px;
+        margin-right: 100px;
+      }
+
+      .disabled {
+        pointer-events: none;
+        opacity: 0.6;
+      }
+
+      .create-new {
+        position: fixed;
+        bottom: 18px;
+        left: 670px;
+        width: 50px;
+        height: 50px;
+        color: rgb(0, 0, 0);
+        background-color: #00ff55;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 90px;
+        font-size: 30px;
+        box-shadow: 2px 2px 5px black;
+        border: 1px solid rgb(0, 129, 22);
+        user-select: none;
+      }
+
+      .title {
+        font-family: Arial, Helvetica, sans-serif;
+        margin-left: 5px;
+        margin-top: -4px;
+        margin-bottom: 10px;
+        font-size: 24px;
+        color: white;
+      }
+
+      .completed {
+        color: #000 !important;
+      }
+
+      .completed a {
+        color: #000 !important;
+        pointer-events: none;
+      }
+
+      .completed .current-test {
+        background-color: #a9a9a9 !important;
+        color: #000 !important;
+      }
+
+      survey-item {
+        position: relative;
+        padding: 20px;
+        border: 1px solid #ccc;
+        margin-bottom: 20px;
+      }
+
+      .ul-ct {
+        list-style: none;
+      }
+
+      .li-at {
+        list-style: none;
+      }
+
+      #rTest {
+        font-family: Arial, Helvetica, sans-serif;
+        margin-left: 5px;
+        margin-top: -10px;
+        margin-bottom: -24px;
+        font-size: 14px;
+        color: white;
+      }
+
+      #dropli {
+        color: white !important;
+      }
+
+      #exita {
+        color: white !important;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <nav class="navbar">
+          <ul>
+            <li id="dropli">
+              Предметы:
+              <div class="dropdown">
+                <ul>
+                  <li>
+                    <a href="#" data-discipline="Математика">Математика</a>
+                  </li>
+                  <li>
+                    <a href="#" data-discipline="Дел. Коммуникация"
+                      >Дел. Коммуникация</a
+                    >
+                  </li>
+                  <li><a href="#" data-discipline="Физика">Физика</a></li>
+                  <li><a href="#" data-discipline="Химия">Химия</a></li>
+                  <li><a href="#" class="all-tests-button">Все</a></li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+          <a href="start.html" id="exita">Выход</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <section class="all-tests">
+        <p class="title">
+          Всего тестов: <span class="questsCounter"></span><br />
+        </p>
+        <p id="rTest">
+          Пройдено тестов: <span class="completedCounter"></span><br />
+          Осталось тестов: <span class="remainingCounter"></span>
+        </p>
+
+        <ul class="tests"></ul>
+
+        <p class="create-new"><a href="creating.html">+</a></p>
+      </section>
+      <section class="current-test">
+        <div
+          class="right-panel"
+          style="width: 100%; height: 100%; border-radius: 25px"
+        >
+          <h2>Выберите тест для просмотра</h2>
+        </div>
+      </section>
+    </main>
+    <script>
+      const createNew = document.querySelector(".create-new");
+      const questsCounter = document.querySelector(".questsCounter");
+      const completedCounter = document.querySelector(".completedCounter");
+      const remainingCounter = document.querySelector(".remainingCounter");
+
+      let currentTestIndex = null;
+      let selectedDiscipline = null;
+
+      document.querySelectorAll(".navbar .dropdown a").forEach((link) => {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          selectedDiscipline = event.target.getAttribute("data-discipline");
+          loadTests();
+        });
+      });
+
+      document
+        .querySelector(".all-tests-button")
+        .addEventListener("click", () => {
+          selectedDiscipline = null;
+          loadTests();
+        });
+
+      function loadTests() {
+        const getTests = JSON.parse(localStorage.getItem("tests")) || [];
+        const testsList = document.querySelector(".tests");
+        testsList.innerHTML = "";
+
+        let completedTests = 0;
+
+        const filteredTests = selectedDiscipline
+          ? getTests.filter((test) => test.discipline === selectedDiscipline)
+          : getTests;
+
+        filteredTests.forEach((item, index) => {
+          const completed =
+            localStorage.getItem(`attempts_${index}`) >= 1 ? "completed" : "";
+          if (completed) completedTests++;
+
+          testsList.innerHTML += `
+            <li class="li-at ${completed}">
+              <a href="#" class="test-item" data-index="${index}">
+                <div class="current-test">
+                  <h1>${item.title}</h1>
+                  <p>${item.description}</p>
+                </div>
+              </a>
+            </li>`;
+        });
+
+        const totalTests = filteredTests.length;
+        const remainingTests = totalTests - completedTests;
+
+        questsCounter.textContent = totalTests;
+        completedCounter.textContent = completedTests;
+        remainingCounter.textContent = remainingTests;
+
+        document.querySelectorAll(".test-item").forEach((item) => {
+          item.addEventListener("click", (event) => {
+            event.preventDefault();
+            const index = item.getAttribute("data-index");
+            displayTest(index);
+          });
+        });
+      }
+
+      function displayTest(index) {
+        const getTests = JSON.parse(localStorage.getItem("tests")) || [];
+        const rightPanel = document.querySelector(".right-panel");
+        currentTestIndex = index;
+
+        if (getTests[index]) {
+          const test = getTests[index];
+          rightPanel.innerHTML = `
+            <h2>${test.title}</h2>
+            <ul class="ul-ct">
+                ${test.questions
+                  .map(
+                    (q, i) => `
+                    <li>
+                        <h3 style="font-size: 22px; margin-bottom: 5px;">${
+                          i + 1
+                        }. ${q.question}</h3>
+                        <div class="answers">
+                            ${q.answers
+                              .map(
+                                (answer, j) => `
+                                <label>
+                                    <input type="radio" name="answer${i}" value="$${
+                                  j + 1
+                                }" /> ${answer}
+                                </label><br>
+                            `
+                              )
+                              .join("")}
+                        </div>
+                    </li>
+                `
+                  )
+                  .join("")}
+            </ul>
+          `;
+        }
+      }
+
+      loadTests();
+    </script>
+  </body>
+</html>

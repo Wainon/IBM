@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Старт</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+            display: flex; /* Используем Flexbox для центрирования */
+            justify-content: center; /* Центрируем по горизонтали */
+            align-items: center; /* Центрируем по вертикали */
+            height: 100vh; /* Задаем высоту body на 100% высоты окна */
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url(https://sotni.ru/wp-content/uploads/2023/08/aenami-alena-velichko-28.webp);
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            filter: blur(5px);
+            z-index: -1;
+        }
+        .nav {
+            background-color: rgba(252, 252, 252, 0.8);
+            border-radius: 30px;
+            width: 500px;
+            height: 250px;
+            margin: auto;
+            margin-top: 15%;
+            border: 1px solid rgb(145, 165, 255);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        ul {
+            gap: 20px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .nav button {
+            width: 400px;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            box-sizing: border-box;
+            border-radius: 10px;
+            border: 1px solid rgb(138, 138, 138);
+        }
+        .nav button:hover {
+            width: 410px;
+            padding: 10px;
+            font-size: 20px;
+            border: none;
+            box-sizing: border-box;
+            border-radius: 10px;
+            border: 1px solid rgb(138, 138, 138);
+            background-color: beige;
+        }
+        a {
+            text-decoration: none;
+            color: black;
+        }
+        li {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <ul>
+            <li><h1>Стартовая страница</h1></li>
+            <li><a href="login.html"><button>Вход</button></a></li>
+            <li><a href="index.html"><button id="startToTest">Тесты</button></a></li>
+        </ul>
+    </div>
+</body>
+</html>
