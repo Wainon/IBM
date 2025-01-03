@@ -6,94 +6,226 @@
     <title>Создание теста</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        color: #333;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
         padding: 20px;
+        background-color: #2c2f33;
+        color: #ffffff;
+      }
+      h1 {
+        text-align: center;
+        color: #ffffff;
+        font-weight: normal;
+        cursor: text;
+        border: none;
+        padding: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .container {
         max-width: 600px;
         margin: auto;
-        background: #fff;
+        background-color: #3c4043;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         padding: 20px;
+      }
+      .question-block {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #4b4f54;
         border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: #4b4f54;
+      }
+      label {
+        display: block;
+        margin: 10px 0 5px;
+        font-weight: normal;
+        color: #ffffff;
+      }
+      input[type="text"],
+      select {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #6b6e73;
+        border-radius: 5px;
+        font-size: 14px;
+        background-color: #3c4043;
+        color: #ffffff;
       }
       button {
-        background-color: #007bff;
-        color: #fff;
         padding: 10px 15px;
+        background-color: #0088cc;
+        color: white;
         border: none;
-        border-radius: 4px;
+        border-radius: 5px;
         cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
       }
       button:hover {
-        background-color: #0056b3;
+        background-color: #007bb5;
+      }
+      button:disabled {
+        background-color: #b0bec5;
+        cursor: not-allowed;
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>Создание теста</h1>
-      <label for="title">Название теста:</label>
-      <input type="text" id="title" placeholder="Введите название" />
+      <h1
+        contenteditable="true"
+        id="surveyTitle"
+        placeholder="Введите название теста..."
+      >
+        Введите название теста...
+      </h1>
 
-      <div id="questions"></div>
+      <label for="surveyDescription">Описание теста:</label>
+      <input type="text" id="surveyDescription" required />
 
-      <button id="add-question">Добавить вопрос</button>
-      <button id="save-test">Сохранить тест</button>
+      <label for="subjectSelect">Выберите предмет:</label>
+      <select id="subjectSelect" required>
+        <option value="" disabled selected>Выберите предмет</option>
+        <option value="Математика">Математика</option>
+        <option value="Физика">Физика</option>
+        <option value="История">История</option>
+        <option value="Информатика">Информатика</option>
+      </select>
+
+      <div id="questionsContainer"></div>
+
+      <button id="addQuestionButton">Добавить вопрос</button>
+      <button onclick="writeNewQuestion()">Сохранить тест</button>
     </div>
 
     <script>
-      document.getElementById("add-question").addEventListener("click", () => {
-        const questionsDiv = document.getElementById("questions");
-        const questionIndex = questionsDiv.children.length;
+      document
+        .getElementById("addQuestionButton")
+        .addEventListener("click", () => {
+          const questionsContainer =
+            document.getElementById("questionsContainer");
+          const questionCount = questionsContainer.children.length;
 
-        const questionDiv = document.createElement("div");
-        questionDiv.innerHTML = `
-                <label for="question${questionIndex}">Вопрос ${
-          questionIndex + 1
-        }:</label>
-                <input type="text" id="question${questionIndex}" placeholder="Введите вопрос">
-                <label for="answer${questionIndex}">Ответ:</label>
-                <input type="text" id="answer${questionIndex}" placeholder="Введите ответ">
-            `;
-        questionsDiv.appendChild(questionDiv);
+          const questionDiv = document.createElement("div");
+          questionDiv.classList.add("question-block");
+          questionDiv.innerHTML = `
+              <label for="questionText${questionCount}">Вопрос ${
+            questionCount + 1
+          }:</label>
+              <input type="text" id="questionText${questionCount}" required />
+
+              <label for="answer1${questionCount}">Вариант 1:</label>
+              <input type="text" id="answer1${questionCount}" required />
+              
+              <label for="answer2${questionCount}">Вариант 2:</label>
+              <input type="text" id="answer2${questionCount}" required />
+              
+              <label for="answer3${questionCount}">Вариант 3:</label>
+              <input type="text" id="answer3${questionCount}" required />
+
+              <label for="answer4${questionCount}">Вариант 4:</label>
+              <input type="text" id="answer4${questionCount}" required />
+              
+              <label for="correctAnswer${questionCount}">Правильный ответ:</label>
+              <select id="correctAnswer${questionCount}" required>
+                  <option value="1">Вариант 1</option>
+                  <option value="2">Вариант 2</option>
+                  <option value="3">Вариант 3</option>
+                  <option value="4">Вариант 4</option>
+              </select>
+          `;
+          questionsContainer.appendChild(questionDiv);
+        });
+
+      const titleInput = document.getElementById("surveyTitle");
+      const defaultTitleText = "Введите название теста...";
+
+      titleInput.addEventListener("focus", () => {
+        if (titleInput.innerText === defaultTitleText) {
+          titleInput.innerText = "";
+        }
       });
 
-      document
-        .getElementById("save-test")
-        .addEventListener("click", async () => {
-          const title = document.getElementById("title").value;
-          const questionsDiv = document.getElementById("questions");
-          const questions = [];
+      titleInput.addEventListener("blur", () => {
+        if (titleInput.innerText.trim() === "") {
+          titleInput.innerText = defaultTitleText;
+        }
+      });
 
-          for (let i = 0; i < questionsDiv.children.length; i++) {
-            const question = document.getElementById(`question${i}`).value;
-            const answer = document.getElementById(`answer${i}`).value;
-            questions.push({ question, answer });
+      async function writeNewQuestion() {
+        const getTitle = document.getElementById("surveyTitle").innerText;
+        const getText = document.getElementById("surveyDescription").value;
+        const subject = document.getElementById("subjectSelect").value;
+
+        if (!getTitle || getTitle === defaultTitleText) {
+          return alert("Заполните название теста!");
+        }
+        if (!subject) {
+          return alert("Выберите предмет!");
+        }
+
+        const questionsContainer =
+          document.getElementById("questionsContainer");
+        if (questionsContainer.children.length < 1) {
+          return alert("Добавьте хотя бы один вопрос!");
+        }
+
+        const questions = [];
+        for (let i = 0; i < questionsContainer.children.length; i++) {
+          const questionText = document.getElementById(
+            `questionText${i}`
+          ).value;
+          const answer1 = document.getElementById(`answer1${i}`).value;
+          const answer2 = document.getElementById(`answer2${i}`).value;
+          const answer3 = document.getElementById(`answer3${i}`).value;
+          const answer4 = document.getElementById(`answer4${i}`).value;
+          const correctAnswer = document.getElementById(
+            `correctAnswer${i}`
+          ).value;
+
+          if (!answer1 || !answer2 || !answer3 || !answer4) {
+            return alert(
+              "Пожалуйста, заполните все варианты ответов для каждого вопроса."
+            );
           }
 
-          const test = { title, questions };
+          questions.push({
+            question: questionText,
+            answers: [answer1, answer2, answer3, answer4],
+            correctAnswer: correctAnswer,
+          });
+        }
 
-          try {
-            const response = await fetch("/upload", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(test),
-            });
+        const testData = {
+          title: getTitle,
+          description: getText,
+          subject: subject,
+          questions: questions,
+        };
 
-            if (response.ok) {
-              alert("Тест успешно сохранен");
-            } else {
-              alert("Ошибка при сохранении теста");
-            }
-          } catch (error) {
-            alert("Не удалось подключиться к серверу");
+        try {
+          const response = await fetch("http://localhost:3000/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(testData),
+          });
+
+          if (response.ok) {
+            alert("Тест успешно отправлен на сервер!");
+          } else {
+            alert("Ошибка при отправке данных!");
           }
-        });
+        } catch (error) {
+          console.error("Ошибка:", error);
+          alert("Не удалось подключиться к серверу.");
+        }
+      }
     </script>
   </body>
 </html>
