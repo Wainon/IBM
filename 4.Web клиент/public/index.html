@@ -241,6 +241,8 @@
 
       #exita {
         color: white !important;
+        text-align: right !important;
+        font-size: 16px;
       }
     </style>
   </head>
@@ -268,6 +270,7 @@
               </div>
             </li>
           </ul>
+          <a href="profile.html" id="exita">Личный кабинет</a>
           <a href="start.html" id="exita">Выход</a>
         </nav>
       </div>
@@ -384,24 +387,30 @@
                               .map(
                                 (answer, j) => `
                                 <label>
-                                    <input type="radio" name="answer${i}" value="$${
-                                  j + 1
-                                }" /> ${answer}
-                                </label><br>
-                            `
+                                    <input type="radio" name="question-${i}" value="${j}" />
+                                    ${answer}
+                                </label>`
                               )
                               .join("")}
                         </div>
-                    </li>
-                `
+                    </li>`
                   )
                   .join("")}
             </ul>
+            <button onclick="submitTest(${index})">Завершить тест</button>
           `;
         }
       }
 
-      loadTests();
+      function submitTest(index) {
+        alert(`Тест №${index + 1} завершён!`);
+        localStorage.setItem(`attempts_${index}`, 1);
+        loadTests();
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadTests();
+      });
     </script>
   </body>
 </html>
