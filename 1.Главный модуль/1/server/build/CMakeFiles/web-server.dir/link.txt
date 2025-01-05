@@ -1,1 +1,0 @@
-/usr/bin/c++ "CMakeFiles/web-server.dir/reg/main.cpp.o" "CMakeFiles/web-server.dir/reg/reg.cpp.o" "CMakeFiles/web-server.dir/discipline/discipline.cpp.o" -o web-server  /usr/lib/x86_64-linux-gnu/libssl.so /usr/lib/x86_64-linux-gnu/libcrypto.so /usr/lib/x86_64-linux-gnu/libpq.so /usr/lib/x86_64-linux-gnu/libssl.so /usr/lib/x86_64-linux-gnu/libcrypto.so 
