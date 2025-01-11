@@ -1,0 +1,7 @@
+aiogram
+redis
+aiohttp
+jwt
+PyJWT
+asyncio
+flask[async]
