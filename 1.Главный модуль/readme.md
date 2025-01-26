@@ -3,7 +3,7 @@
 ВАЖНО!!! Вся информация о моей части можно узнать при нажитии на мой ник.
 
 ## Рабтал на ним:
-[Чакир Максим](https://github.com/t-chakir/KFU/blob/main/IBM-project/IBM.md)
+[Чакир Максим](https://github.com/t-chakir/KFU/tree/main/IBM-project)
 
 # Сценарй 
 Пользователь может находится в одном из состояний:
